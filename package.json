@@ -1,0 +1,27 @@
+{
+  "name": "@vegaprotocol/openrpc-md",
+  "version": "1.0.0",
+  "description": "Generate a single markdown from a simplistic openrpc doc",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "postinstall": "npm run setup",
+    "setup": "husky install",
+    "test": "tape src/**/*.test.js",
+    "lint": "standard src/**/*.js"
+  },
+  "keywords": [
+    "open-rpc"
+  ],
+  "author": "Edd <edd@vega.xyz>",
+  "license": "MIT",
+  "devDependencies": {
+    "husky": "^8.0.1",
+    "standard": "^17.0.0",
+    "tap-arc": "^0.3.5",
+    "tape": "^5.6.0"
+  },
+  "dependencies": {
+    "@open-rpc/schema-utils-js": "^1.16.1"
+  }
+}
