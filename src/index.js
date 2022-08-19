@@ -8,7 +8,7 @@ const target = process.argv[2]
 
 if (!target) {
   console.error('Please provide a valid OpenRPC file as a parameter')
-  process.exit(1);
+  process.exit(1)
 }
 
 let jsonRaw, json
@@ -24,4 +24,3 @@ try {
 } catch (e) {
   console.error(`Unable to open or parse ${target}`)
 }
-
