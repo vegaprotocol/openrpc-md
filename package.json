@@ -7,7 +7,7 @@
   "scripts": {
     "postinstall": "npm run setup",
     "setup": "husky install",
-    "test": "tape src/**/*.test.js",
+    "test": "tape src/**/*.test.js | tap-arc",
     "lint": "standard src/**/*.js"
   },
   "keywords": [

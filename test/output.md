@@ -18,7 +18,9 @@ However, it's not possible to have multiple connections on the same wallet for t
 This method should be the entry point of every third-party application. Once connected, see the method `get_permissions`.
 
 ## Parameters
-test
+| Parameter name  |  Type  |  Description |
+|------------------|--------|--------|
+| **hostname** | string | The name of the third-party application initiating the connection. |
 
 ## Result: `token`
 
@@ -28,13 +30,14 @@ test
 
 #### Parameters
 ```json
-[
-    {
-        "name": "hostname",
-        "value": "vega.xyz"
-    }
-]
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "session.connect_wallet",
+    "params": {}
+}
 ```
+
 #### Result
 ```json
 {
@@ -46,10 +49,11 @@ test
 ```
 
 
+
 ## Errors
-*Client error* (3000): the client closed the connection
-*Client error* (3001): the client rejected the request
-*Server error* (-32001): the request has been interrupted
+- *Client error* (3000): the client closed the connection
+- *Client error* (3001): the client rejected the request
+- *Server error* (-32001): the request has been interrupted
 
 
 # session.disconnect_wallet
@@ -60,7 +64,9 @@ This method ends the connection between the third-party application and the wall
 Calling this method with an invalid token doesn't fail.
 
 ## Parameters
-test
+| Parameter name  |  Type  |  Description |
+|------------------|--------|--------|
+| **token** | string | - |
 
 ## Result: `No result`
 
@@ -70,13 +76,14 @@ test
 
 #### Parameters
 ```json
-[
-    {
-        "name": "token",
-        "value": "hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG"
-    }
-]
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "session.disconnect_wallet",
+    "params": {}
+}
 ```
+
 #### Result
 ```json
 {
@@ -88,13 +95,7 @@ test
 
 
 
-{
-  public_keys: {
-    type: 'string',
-    description: 'The different access modes a permission can have.',
-    enum: [ 'read', 'write', 'none' ]
-  }
-}
+
 
 # session.get_permissions
 > Returns the permissions set on the wallet for the third-party application.
@@ -104,10 +105,12 @@ This method returns the permissions set on the wallet for the third-party applic
 This method should be called, by the third-party application, right after it successfully connected to a wallet, to ensure it has sufficient permissions to call the method it relies on. If the third-party application doesn't have enough permissions, see the method `request_permissions`.
 
 ## Parameters
-test
+| Parameter name  |  Type  |  Description |
+|------------------|--------|--------|
+| **token** | string | - |
 
 ## Result: `permissions`
-| Parameter name  |  Type  |  Description | Example |
+| Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
 | public_keys | string | The different access modes a permission can have. | -|
 
@@ -117,13 +120,14 @@ test
 
 #### Parameters
 ```json
-[
-    {
-        "name": "token",
-        "value": "hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG"
-    }
-]
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "session.get_permissions",
+    "params": {}
+}
 ```
+
 #### Result
 ```json
 {
@@ -137,13 +141,7 @@ test
 
 
 
-{
-  public_keys: {
-    type: 'string',
-    description: 'The different access modes a permission can have.',
-    enum: [ 'read', 'write', 'none' ]
-  }
-}
+
 
 # session.request_permissions
 > Requests permissions update for the third-party application.
@@ -155,11 +153,13 @@ All permissions the third-party relies on have to be specified. If a permission 
 The client has to review the permissions.
 
 ## Parameters
-test
-test
+| Parameter name  |  Type  |  Description |
+|------------------|--------|--------|
+| **token** | string | - |
+| **requestedPermissions** | object | - |
 
 ## Result: `permissions`
-| Parameter name  |  Type  |  Description | Example |
+| Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
 | public_keys | string | The different access modes a permission can have. | -|
 
@@ -169,19 +169,14 @@ test
 
 #### Parameters
 ```json
-[
-    {
-        "name": "token",
-        "value": "hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG"
-    },
-    {
-        "name": "requestedPermissions",
-        "value": {
-            "public_key": "read"
-        }
-    }
-]
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "session.request_permissions",
+    "params": {}
+}
 ```
+
 #### Result
 ```json
 {
@@ -193,22 +188,20 @@ test
     }
 }
 ```
+
 ,### Updating permissions for "vega.xyz" with omitted permission
 > The third-party application "vega.xyz" omits a permission during the update and the client accepts. This automatically marks the omitted permission as revoked.
 
 #### Parameters
 ```json
-[
-    {
-        "name": "token",
-        "value": "hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG"
-    },
-    {
-        "name": "requestedPermissions",
-        "value": {}
-    }
-]
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "session.request_permissions",
+    "params": {}
+}
 ```
+
 #### Result
 ```json
 {
@@ -222,10 +215,11 @@ test
 ```
 
 
+
 ## Errors
-*Client error* (3000): the client closed the connection
-*Client error* (3001): the client rejected the request
-*Server error* (-32001): the request has been interrupted
+- *Client error* (3000): the client closed the connection
+- *Client error* (3001): the client rejected the request
+- *Server error* (-32001): the request has been interrupted
 
 
 # session.list_keys
@@ -236,7 +230,9 @@ This method returns the keys the client has allowed the third-party application 
 It requires a `read` access on `public_keys`.
 
 ## Parameters
-test
+| Parameter name  |  Type  |  Description |
+|------------------|--------|--------|
+| **token** | string | - |
 
 ## Result: `keys`
 
@@ -246,13 +242,14 @@ test
 
 #### Parameters
 ```json
-[
-    {
-        "name": "token",
-        "value": "hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG"
-    }
-]
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "session.list_keys",
+    "params": {}
+}
 ```
+
 #### Result
 ```json
 {
@@ -265,29 +262,10 @@ test
 ```
 
 
-## Errors
-*Application error* (2000): a "read" access on public keys is required
 
-{
-  receivedAt: {
-    type: 'string',
-    description: 'The date when the API received the request to send the transaction.\n' +
-      '\n' +
-      'The time is a quoted string in RFC 3339 format, with sub-second precision added if present.',
-    examples: [ '2021-02-18T21:54:42.123Z' ]
-  },
-  sentAt: {
-    type: 'string',
-    description: 'The date when the transaction has been sent to the network.\n' +
-      '\n' +
-      'The time is a quoted string in RFC 3339 format, with sub-second precision added if present.',
-    examples: [ '2021-02-18T21:54:42.123Z' ]
-  },
-  transactionHash: {
-    type: 'string',
-    description: "The hash of the transaction. It's used to uniquely identify the transaction and can be used in the block explorer to retrieve it."
-  }
-}
+## Errors
+- *Application error* (2000): a "read" access on public keys is required
+
 
 # session.send_transaction
 > Send a transaction to the network.
@@ -297,13 +275,15 @@ This method sends a transaction to the network.
 The client has to review the transaction.
 
 ## Parameters
-test
-test
-test
-test
+| Parameter name  |  Type  |  Description |
+|------------------|--------|--------|
+| **token** | string | - |
+| **publicKey** | string | - |
+| **sendingMode** | string | The chosen mode to send the transaction:- `TYPE_SYNC` returns the result of running the transaction.- `TYPE_ASYNC` returns right away without waiting to hear if the transaction is even valid.- `TYPE_COMMIT` waits until the transaction is committed in a block or until some timeout is reached or returns return right away if the transaction is not valid. |
+| **encodedTransaction** | string | - |
 
 ## Result: `transaction_status`
-| Parameter name  |  Type  |  Description | Example |
+| Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
 | receivedAt | string | The date when the API received the request to send the transaction. The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | `"2021-02-18T21:54:42.123Z"`|
 | sentAt | string | The date when the transaction has been sent to the network. The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | `"2021-02-18T21:54:42.123Z"`|
@@ -315,25 +295,14 @@ test
 
 #### Parameters
 ```json
-[
-    {
-        "name": "token",
-        "value": "hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG"
-    },
-    {
-        "name": "publicKey",
-        "value": "3fd42fd5ceb22d99ac45086f1d82d516118a5cb7ad9a2e096cd78ca2c8960c80"
-    },
-    {
-        "name": "sendingMode",
-        "value": "TYPE_SYNC"
-    },
-    {
-        "name": "encodedTransaction",
-        "value": "ewogICAgInZvdGVTdWJtaXNzaW9uIjogewogICAgICAgICJwcm9wb3NhbElkIjogImViMmQzOTAyZmRkYTljM2ViNmUzNjlmMjIzNTY4OWI4NzFjNzMyMmNmM2FiMjg0ZGRlM2U5ZGZjMTM4NjNhMTciLAogICAgICAgICJ2YWx1ZSI6ICJWQUxVRV9ZRVMiCiAgICB9Cn0K"
-    }
-]
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "session.send_transaction",
+    "params": {}
+}
 ```
+
 #### Result
 ```json
 {
@@ -347,35 +316,16 @@ test
 ```
 
 
-## Errors
-*Network error* (1000): no healthy node available
-*Network error* (1000): couldn't get information about the last block on the network
-*Network error* (1000): the transaction failed
-*Application error* (2000): the public key is not allowed to be used
-*Client error* (3000): the client closed the connection
-*Client error* (3001): the client rejected the request
-*Server error* (-32001): the request has been interrupted
 
-{
-  receivedAt: {
-    type: 'string',
-    description: 'The date when the API received the request to send the transaction.\n' +
-      '\n' +
-      'The time is a quoted string in RFC 3339 format, with sub-second precision added if present.',
-    examples: [ '2021-02-18T21:54:42.123Z' ]
-  },
-  sentAt: {
-    type: 'string',
-    description: 'The date when the transaction has been sent to the network.\n' +
-      '\n' +
-      'The time is a quoted string in RFC 3339 format, with sub-second precision added if present.',
-    examples: [ '2021-02-18T21:54:42.123Z' ]
-  },
-  transactionHash: {
-    type: 'string',
-    description: "The hash of the transaction. It's used to uniquely identify the transaction and can be used in the block explorer to retrieve it."
-  }
-}
+## Errors
+- *Network error* (1000): no healthy node available
+- *Network error* (1000): couldn't get information about the last block on the network
+- *Network error* (1000): the transaction failed
+- *Application error* (2000): the public key is not allowed to be used
+- *Client error* (3000): the client closed the connection
+- *Client error* (3001): the client rejected the request
+- *Server error* (-32001): the request has been interrupted
+
 
 # session.get_chain_id
 > Returns the chain ID of the network in use.
@@ -386,9 +336,10 @@ It should be called by every third-party application to know from which network 
 
 ## Parameters
 
+None required
 
 ## Result: `chainID`
-| Parameter name  |  Type  |  Description | Example |
+| Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
 | receivedAt | string | The date when the API received the request to send the transaction. The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | `"2021-02-18T21:54:42.123Z"`|
 | sentAt | string | The date when the transaction has been sent to the network. The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | `"2021-02-18T21:54:42.123Z"`|
@@ -400,25 +351,14 @@ It should be called by every third-party application to know from which network 
 
 #### Parameters
 ```json
-[
-    {
-        "name": "token",
-        "value": "hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG"
-    },
-    {
-        "name": "publicKey",
-        "value": "3fd42fd5ceb22d99ac45086f1d82d516118a5cb7ad9a2e096cd78ca2c8960c80"
-    },
-    {
-        "name": "sendingMode",
-        "value": "TYPE_SYNC"
-    },
-    {
-        "name": "encodedTransaction",
-        "value": "ewogICAgInZvdGVTdWJtaXNzaW9uIjogewogICAgICAgICJwcm9wb3NhbElkIjogImViMmQzOTAyZmRkYTljM2ViNmUzNjlmMjIzNTY4OWI4NzFjNzMyMmNmM2FiMjg0ZGRlM2U5ZGZjMTM4NjNhMTciLAogICAgICAgICJ2YWx1ZSI6ICJWQUxVRV9ZRVMiCiAgICB9Cn0K"
-    }
-]
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "session.get_chain_id",
+    "params": {}
+}
 ```
+
 #### Result
 ```json
 {
@@ -432,7 +372,8 @@ It should be called by every third-party application to know from which network 
 ```
 
 
+
 ## Errors
-*Network error* (1000): no healthy node available
-*Network error* (1000): couldn't get information about the last block on the network
+- *Network error* (1000): no healthy node available
+- *Network error* (1000): couldn't get information about the last block on the network
 
