@@ -21,5 +21,5 @@ A much richer set of tools is available from [Open RPC](https://github.com/open-
 
 But if none of those work for yoru configuration and all you want is [Markdown](https://www.markdownguide.org/), then you might be in the right place.
 
-# [MIT](LICENSE.md)
+# [LICENSE](LICENSE.md)
 MIT

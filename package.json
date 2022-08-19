@@ -1,6 +1,6 @@
 {
   "name": "@vegaprotocol/openrpc-md",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generate a single markdown from a simplistic openrpc doc",
   "type": "module",
   "main": "src/index.js",
@@ -16,6 +16,14 @@
     "open-rpc"
   ],
   "author": "Edd <edd@vega.xyz>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vegaprotocol/openrpc-md.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vegaprotocol/openrpc-md/issues"
+  },
+  "homepage": "https://github.com/vegaprotocol/openrpc-md#readme",
   "license": "MIT",
   "devDependencies": {
     "husky": "^8.0.1",
