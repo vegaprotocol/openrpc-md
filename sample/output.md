@@ -341,7 +341,7 @@ None required
 ## Result: `chainID`
 | Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
-| chainID | string | The indentifier for the chain | `"test-chain-Thz9c6"`|
+| chainID | string | The identifier for the chain | `"test-chain-Thz9c6"`|
 
 ## Examples
 ### Fetching the chain ID

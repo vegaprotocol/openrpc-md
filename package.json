@@ -4,11 +4,13 @@
   "description": "Generate a single markdown from a simplistic openrpc doc",
   "type": "module",
   "main": "src/index.js",
+  "bin": "src/index.js",
   "scripts": {
     "postinstall": "npm run setup",
     "setup": "husky install",
     "test": "tape src/**/*.test.js | tap-arc",
-    "lint": "standard src/**/*.js"
+    "lint": "standard src/**/*.js",
+    "generate-sample": "node src/index.js ./sample/openrpc.json > ./sample/output.md"
   },
   "keywords": [
     "open-rpc"
