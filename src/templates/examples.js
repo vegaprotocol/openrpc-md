@@ -1,8 +1,12 @@
 import { codeBlock } from './codeblock.js'
 
 export function generateRequest (method, params) {
-  const p = {}
-  if (params && Array.isArray(params)) {
+  if (!method || method.length === 0) {
+    return ''
+  }
+
+  const p = []
+  if (params && Array.isArray(params) && params.length > 0) {
     params.forEach(param => { p[param.name] = param.value })
   }
 
@@ -12,6 +16,7 @@ export function generateRequest (method, params) {
     method,
     params: p
   }
+
   return wrapper
 }
 

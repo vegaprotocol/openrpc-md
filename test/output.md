@@ -34,7 +34,7 @@ This method should be the entry point of every third-party application. Once con
     "id": 1,
     "jsonrpc": "2.0",
     "method": "session.connect_wallet",
-    "params": {}
+    "params": []
 }
 ```
 
@@ -80,7 +80,7 @@ Calling this method with an invalid token doesn't fail.
     "id": 1,
     "jsonrpc": "2.0",
     "method": "session.disconnect_wallet",
-    "params": {}
+    "params": []
 }
 ```
 
@@ -124,7 +124,7 @@ This method should be called, by the third-party application, right after it suc
     "id": 1,
     "jsonrpc": "2.0",
     "method": "session.get_permissions",
-    "params": {}
+    "params": []
 }
 ```
 
@@ -173,7 +173,7 @@ The client has to review the permissions.
     "id": 1,
     "jsonrpc": "2.0",
     "method": "session.request_permissions",
-    "params": {}
+    "params": []
 }
 ```
 
@@ -198,7 +198,7 @@ The client has to review the permissions.
     "id": 1,
     "jsonrpc": "2.0",
     "method": "session.request_permissions",
-    "params": {}
+    "params": []
 }
 ```
 
@@ -246,7 +246,7 @@ It requires a `read` access on `public_keys`.
     "id": 1,
     "jsonrpc": "2.0",
     "method": "session.list_keys",
-    "params": {}
+    "params": []
 }
 ```
 
@@ -299,7 +299,7 @@ The client has to review the transaction.
     "id": 1,
     "jsonrpc": "2.0",
     "method": "session.send_transaction",
-    "params": {}
+    "params": []
 }
 ```
 
@@ -341,13 +341,11 @@ None required
 ## Result: `chainID`
 | Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
-| receivedAt | string | The date when the API received the request to send the transaction. The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | `"2021-02-18T21:54:42.123Z"`|
-| sentAt | string | The date when the transaction has been sent to the network. The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | `"2021-02-18T21:54:42.123Z"`|
-| transactionHash | string | The hash of the transaction. It's used to uniquely identify the transaction and can be used in the block explorer to retrieve it. | -|
+| chainID | string | The indentifier for the chain | `"test-chain-Thz9c6"`|
 
 ## Examples
-### Sending a transaction for "vega.xyz"
-> The third-party application "vega.xyz" requests to send a transaction and the client accepts.
+### Fetching the chain ID
+> An example of requesting the chain's ID
 
 #### Parameters
 ```json
@@ -355,7 +353,7 @@ None required
     "id": 1,
     "jsonrpc": "2.0",
     "method": "session.get_chain_id",
-    "params": {}
+    "params": []
 }
 ```
 
@@ -364,9 +362,7 @@ None required
 {
     "name": "Success",
     "value": {
-        "receivedAt": "2021-02-18T21:54:42.123Z",
-        "sentAt": "2021-02-18T21:54:42.123Z",
-        "txHash": "E8C167126D1FC8D92898AB9C07C318161DF68753A1316A69ABDC9ADC557723B3"
+        "chainID": "test-chain-Thz9c6"
     }
 }
 ```
