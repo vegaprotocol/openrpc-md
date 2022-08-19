@@ -28,8 +28,8 @@ test('Errors renders all errors', t => {
   const res = sectionErrors([error, error])
 
   const expected = `### Errors
-- *Error message* (1000): Test error message\r
-- *Error message* (1000): Test error message`
+- **Error message** (1000): Test error message\r
+- **Error message** (1000): Test error message`
 
   t.equal(res, expected, 'Generated output matches expected output')
 })

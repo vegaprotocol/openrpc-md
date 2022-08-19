@@ -8,7 +8,7 @@ export function sectionErrors (errors) {
     return ''
   }
 
-  const output = errors.map(e => `- *${e.message}* (${e.code}): ${e.data}`).join('\r\n')
+  const output = errors.map(e => `- **${e.message}** (${e.code}): ${e.data}`).join('\r\n')
   return `### Errors
 ${output}`
 }

@@ -1,5 +1,10 @@
+---
+    title: OpenRPC Example
+    hide_title: true
+---
 
-# session.connect_wallet
+
+## session.connect_wallet
 > Initiates a connection between a wallet and a third-party application.
 
 This method initiates a connection between a wallet and a third-party application.
@@ -17,28 +22,30 @@ However, it's not possible to have multiple connections on the same wallet for t
 
 This method should be the entry point of every third-party application. Once connected, see the method `get_permissions`.
 
-## Parameters
+### Parameters
 | Parameter name  |  Type  |  Description |
 |------------------|--------|--------|
 | **hostname** | string | The name of the third-party application initiating the connection. |
 
-## Result: `token`
+### Result: `token`
 
-## Examples
-### Accepting a connection from "vega.xyz"
+### Examples
+#### Accepting a connection from "vega.xyz"
 > The third-party application "vega.xyz" requests a connection to a wallet and the client accepts.
 
-#### Parameters
+##### Parameters
 ```json
 {
     "id": 1,
     "jsonrpc": "2.0",
     "method": "session.connect_wallet",
-    "params": []
+    "params": {
+        "hostname": "vega.xyz"
+    }
 }
 ```
 
-#### Result
+##### Result
 ```json
 {
     "name": "Success",
@@ -50,41 +57,43 @@ This method should be the entry point of every third-party application. Once con
 
 
 
-## Errors
-- *Client error* (3000): the client closed the connection
-- *Client error* (3001): the client rejected the request
-- *Server error* (-32001): the request has been interrupted
+### Errors
+- **Client error** (3000): the client closed the connection
+- **Client error** (3001): the client rejected the request
+- **Server error** (-32001): the request has been interrupted
+---
 
-
-# session.disconnect_wallet
+## session.disconnect_wallet
 > Ends the connection between the third-party application and the wallet.
 
 This method ends the connection between the third-party application and the wallet. The token is, then, no longer valid.
 
 Calling this method with an invalid token doesn't fail.
 
-## Parameters
+### Parameters
 | Parameter name  |  Type  |  Description |
 |------------------|--------|--------|
 | **token** | string | - |
 
-## Result: `No result`
+### Result: `No result`
 
-## Examples
-### Disconnection from "vega.xyz"
+### Examples
+#### Disconnection from "vega.xyz"
 > The third-party application "vega.xyz" requests a disconnection to a wallet using a valid token.
 
-#### Parameters
+##### Parameters
 ```json
 {
     "id": 1,
     "jsonrpc": "2.0",
     "method": "session.disconnect_wallet",
-    "params": []
+    "params": {
+        "token": "hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG"
+    }
 }
 ```
 
-#### Result
+##### Result
 ```json
 {
     "name": "Success",
@@ -95,40 +104,42 @@ Calling this method with an invalid token doesn't fail.
 
 
 
+---
 
-
-# session.get_permissions
+## session.get_permissions
 > Returns the permissions set on the wallet for the third-party application.
 
 This method returns the permissions set on the wallet for the third-party application.
 
 This method should be called, by the third-party application, right after it successfully connected to a wallet, to ensure it has sufficient permissions to call the method it relies on. If the third-party application doesn't have enough permissions, see the method `request_permissions`.
 
-## Parameters
+### Parameters
 | Parameter name  |  Type  |  Description |
 |------------------|--------|--------|
 | **token** | string | - |
 
-## Result: `permissions`
+### Result: `permissions`
 | Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
 | public_keys | string | The different access modes a permission can have. | -|
 
-## Examples
-### Get permissions set for "vega.xyz"
+### Examples
+#### Get permissions set for "vega.xyz"
 > The third-party application "vega.xyz" wants to know the permissions that have been set on the wallet in use.
 
-#### Parameters
+##### Parameters
 ```json
 {
     "id": 1,
     "jsonrpc": "2.0",
     "method": "session.get_permissions",
-    "params": []
+    "params": {
+        "token": "hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG"
+    }
 }
 ```
 
-#### Result
+##### Result
 ```json
 {
     "name": "Success",
@@ -141,9 +152,9 @@ This method should be called, by the third-party application, right after it suc
 
 
 
+---
 
-
-# session.request_permissions
+## session.request_permissions
 > Requests permissions update for the third-party application.
 
 This method allows a third-party application to request new permissions to access the methods it requires.
@@ -152,32 +163,37 @@ All permissions the third-party relies on have to be specified. If a permission 
 
 The client has to review the permissions.
 
-## Parameters
+### Parameters
 | Parameter name  |  Type  |  Description |
 |------------------|--------|--------|
 | **token** | string | - |
 | **requestedPermissions** | object | - |
 
-## Result: `permissions`
+### Result: `permissions`
 | Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
 | public_keys | string | The different access modes a permission can have. | -|
 
-## Examples
-### Updating permissions for "vega.xyz"
+### Examples
+#### Updating permissions for "vega.xyz"
 > The third-party application "vega.xyz" requests an update of its permissions and the client accepts.
 
-#### Parameters
+##### Parameters
 ```json
 {
     "id": 1,
     "jsonrpc": "2.0",
     "method": "session.request_permissions",
-    "params": []
+    "params": {
+        "token": "hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG",
+        "requestedPermissions": {
+            "public_key": "read"
+        }
+    }
 }
 ```
 
-#### Result
+##### Result
 ```json
 {
     "name": "Success",
@@ -189,20 +205,24 @@ The client has to review the permissions.
 }
 ```
 
-,### Updating permissions for "vega.xyz" with omitted permission
+
+#### Updating permissions for "vega.xyz" with omitted permission
 > The third-party application "vega.xyz" omits a permission during the update and the client accepts. This automatically marks the omitted permission as revoked.
 
-#### Parameters
+##### Parameters
 ```json
 {
     "id": 1,
     "jsonrpc": "2.0",
     "method": "session.request_permissions",
-    "params": []
+    "params": {
+        "token": "hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG",
+        "requestedPermissions": {}
+    }
 }
 ```
 
-#### Result
+##### Result
 ```json
 {
     "name": "Success",
@@ -216,41 +236,43 @@ The client has to review the permissions.
 
 
 
-## Errors
-- *Client error* (3000): the client closed the connection
-- *Client error* (3001): the client rejected the request
-- *Server error* (-32001): the request has been interrupted
+### Errors
+- **Client error** (3000): the client closed the connection
+- **Client error** (3001): the client rejected the request
+- **Server error** (-32001): the request has been interrupted
+---
 
-
-# session.list_keys
+## session.list_keys
 > Returns the keys the client has allowed the third-party application to have access to.
 
 This method returns the keys the client has allowed the third-party application to have access to.
 
 It requires a `read` access on `public_keys`.
 
-## Parameters
+### Parameters
 | Parameter name  |  Type  |  Description |
 |------------------|--------|--------|
 | **token** | string | - |
 
-## Result: `keys`
+### Result: `keys`
 
-## Examples
-### List keys allowed on "vega.xyz"
+### Examples
+#### List keys allowed on "vega.xyz"
 > The third-party application "vega.xyz" wants to list the public keys it has access to.
 
-#### Parameters
+##### Parameters
 ```json
 {
     "id": 1,
     "jsonrpc": "2.0",
     "method": "session.list_keys",
-    "params": []
+    "params": {
+        "token": "hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG"
+    }
 }
 ```
 
-#### Result
+##### Result
 ```json
 {
     "name": "Success",
@@ -263,18 +285,18 @@ It requires a `read` access on `public_keys`.
 
 
 
-## Errors
-- *Application error* (2000): a "read" access on public keys is required
+### Errors
+- **Application error** (2000): a "read" access on public keys is required
+---
 
-
-# session.send_transaction
+## session.send_transaction
 > Send a transaction to the network.
 
 This method sends a transaction to the network.
 
 The client has to review the transaction.
 
-## Parameters
+### Parameters
 | Parameter name  |  Type  |  Description |
 |------------------|--------|--------|
 | **token** | string | - |
@@ -282,28 +304,33 @@ The client has to review the transaction.
 | **sendingMode** | string | The chosen mode to send the transaction:- `TYPE_SYNC` returns the result of running the transaction.- `TYPE_ASYNC` returns right away without waiting to hear if the transaction is even valid.- `TYPE_COMMIT` waits until the transaction is committed in a block or until some timeout is reached or returns return right away if the transaction is not valid. |
 | **encodedTransaction** | string | - |
 
-## Result: `transaction_status`
+### Result: `transaction_status`
 | Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
 | receivedAt | string | The date when the API received the request to send the transaction. The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | `"2021-02-18T21:54:42.123Z"`|
 | sentAt | string | The date when the transaction has been sent to the network. The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | `"2021-02-18T21:54:42.123Z"`|
 | transactionHash | string | The hash of the transaction. It's used to uniquely identify the transaction and can be used in the block explorer to retrieve it. | -|
 
-## Examples
-### Sending a transaction for "vega.xyz"
+### Examples
+#### Sending a transaction for "vega.xyz"
 > The third-party application "vega.xyz" requests to send a transaction and the client accepts.
 
-#### Parameters
+##### Parameters
 ```json
 {
     "id": 1,
     "jsonrpc": "2.0",
     "method": "session.send_transaction",
-    "params": []
+    "params": {
+        "token": "hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG",
+        "publicKey": "3fd42fd5ceb22d99ac45086f1d82d516118a5cb7ad9a2e096cd78ca2c8960c80",
+        "sendingMode": "TYPE_SYNC",
+        "encodedTransaction": "ewogICAgInZvdGVTdWJtaXNzaW9uIjogewogICAgICAgICJwcm9wb3NhbElkIjogImViMmQzOTAyZmRkYTljM2ViNmUzNjlmMjIzNTY4OWI4NzFjNzMyMmNmM2FiMjg0ZGRlM2U5ZGZjMTM4NjNhMTciLAogICAgICAgICJ2YWx1ZSI6ICJWQUxVRV9ZRVMiCiAgICB9Cn0K"
+    }
 }
 ```
 
-#### Result
+##### Result
 ```json
 {
     "name": "Success",
@@ -317,37 +344,37 @@ The client has to review the transaction.
 
 
 
-## Errors
-- *Network error* (1000): no healthy node available
-- *Network error* (1000): couldn't get information about the last block on the network
-- *Network error* (1000): the transaction failed
-- *Application error* (2000): the public key is not allowed to be used
-- *Client error* (3000): the client closed the connection
-- *Client error* (3001): the client rejected the request
-- *Server error* (-32001): the request has been interrupted
+### Errors
+- **Network error** (1000): no healthy node available
+- **Network error** (1000): couldn't get information about the last block on the network
+- **Network error** (1000): the transaction failed
+- **Application error** (2000): the public key is not allowed to be used
+- **Client error** (3000): the client closed the connection
+- **Client error** (3001): the client rejected the request
+- **Server error** (-32001): the request has been interrupted
+---
 
-
-# session.get_chain_id
+## session.get_chain_id
 > Returns the chain ID of the network in use.
 
 This method returns the chain ID of the network in use.
 
 It should be called by every third-party application to know from which network it should fetch data.
 
-## Parameters
+### Parameters
 
 None required
 
-## Result: `chainID`
+### Result: `chainID`
 | Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
 | chainID | string | The identifier for the chain | `"test-chain-Thz9c6"`|
 
-## Examples
-### Fetching the chain ID
+### Examples
+#### Fetching the chain ID
 > An example of requesting the chain's ID
 
-#### Parameters
+##### Parameters
 ```json
 {
     "id": 1,
@@ -357,7 +384,7 @@ None required
 }
 ```
 
-#### Result
+##### Result
 ```json
 {
     "name": "Success",
@@ -369,7 +396,8 @@ None required
 
 
 
-## Errors
-- *Network error* (1000): no healthy node available
-- *Network error* (1000): couldn't get information about the last block on the network
+### Errors
+- **Network error** (1000): no healthy node available
+- **Network error** (1000): couldn't get information about the last block on the network
+
 

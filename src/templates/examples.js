@@ -51,7 +51,7 @@ ${codeBlock(req)}
 ${codeBlock(e.result)}
 
 `
-  })
+  }).join('\r\n')
 
   // Output all examples under heading
   return `### Examples
