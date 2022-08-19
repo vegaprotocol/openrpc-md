@@ -15,7 +15,7 @@ npx @vegaprotocol/openrpc-md ./sample/openrpc.json
 # Alternatives
 A much richer set of tools is available from [Open RPC](https://github.com/open-rpc/), specifically:
 
-- [open-rpc/generator](https://github.com/open-rpc/generator) can generate Gatsby docs
+- [open-rpc/generator](https://github.com/open-rpc/generator) can generate [Gatsby](https://www.gatsbyjs.com/) docs
 - [open-rpc/playground](https://github.com/open-rpc/playground) creates an interactive UI for reading about & executing queries
 - [openrpc/docs-react](https://github.com/open-rpc/docs-react) is a [React](https://github.com/facebook/react) component to render just the documentation
 
