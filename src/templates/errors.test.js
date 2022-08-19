@@ -20,14 +20,14 @@ test('Errors renders nothing if there are no errors', t => {
 test('Errors renders a header if there are errors', t => {
   t.plan(1)
   const res = sectionErrors([error])
-  t.ok(res.startsWith('## Errors'), 'Contains a second level heading')
+  t.ok(res.startsWith('### Errors'), 'Contains a third level heading')
 })
 
 test('Errors renders all errors', t => {
   t.plan(1)
   const res = sectionErrors([error, error])
 
-  const expected = `## Errors
+  const expected = `### Errors
 - *Error message* (1000): Test error message\r
 - *Error message* (1000): Test error message`
 

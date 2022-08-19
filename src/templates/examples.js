@@ -5,9 +5,12 @@ export function generateRequest (method, params) {
     return ''
   }
 
-  const p = []
+  let p
   if (params && Array.isArray(params) && params.length > 0) {
+    p = {}
     params.forEach(param => { p[param.name] = param.value })
+  } else {
+    p = []
   }
 
   const wrapper = {
@@ -36,18 +39,21 @@ export function sectionExamples (examples, methodName) {
   }
 
   // Create a section for each example
-  const output = examples.map(e => `### ${e.name}
+  const output = examples.map(e => {
+    const req = generateRequest(methodName, e.params)
+    return `#### ${e.name}
 > ${e.description}
 
-#### Parameters
-${codeBlock(generateRequest(methodName, e.params))}
+##### Parameters
+${codeBlock(req)}
 
-#### Result
+##### Result
 ${codeBlock(e.result)}
 
-`)
+`
+  })
 
   // Output all examples under heading
-  return `## Examples
+  return `### Examples
 ${output}`
 }

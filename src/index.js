@@ -3,8 +3,10 @@
 import { readFileSync } from 'node:fs'
 import { parseOpenRPCDocument } from '@open-rpc/schema-utils-js'
 import { method } from './templates/method.js'
+import { wrapper } from './templates/wrapper.js'
 
 const target = process.argv[2]
+const title = process.argv[3]
 
 if (!target) {
   console.error('Please provide a valid OpenRPC file as a parameter')
@@ -17,10 +19,9 @@ try {
   jsonRaw = readFileSync(target)
   json = await parseOpenRPCDocument(jsonRaw.toString())
 
-  json.methods.forEach(m => {
-    const output = method(m)
-    console.log(output)
-  })
+  const output = json.methods.map(m => method(m)).join('---\r\n')
+
+  console.log(wrapper(output, title))
 } catch (e) {
   console.error(`Unable to open or parse ${target}`)
 }

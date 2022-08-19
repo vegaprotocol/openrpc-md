@@ -19,9 +19,9 @@ test('Method with enough details generates basic outline', t => {
     description: 'A fuller description'
   })
 
-  t.ok(res.indexOf('# Test method'), 'Has a top level header')
+  t.ok(res.indexOf('## Test method'), 'Has a second level header')
   t.ok(res.indexOf('> This method is a test'), 'Has the summary as a quote')
   t.ok(res.indexOf('A fuller description'), 'Has the description')
 
-  t.ok(res.indexOf('##') === -1, 'No subheaders due to no more details')
+  t.ok(res.indexOf('###') === -1, 'No subheaders due to no more details')
 })

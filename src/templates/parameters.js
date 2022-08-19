@@ -8,7 +8,7 @@ export function sectionParameters (params) {
     return ''
   }
 
-  const output = '## Parameters'
+  const output = '### Parameters'
   let header = ''
   let body = ''
 

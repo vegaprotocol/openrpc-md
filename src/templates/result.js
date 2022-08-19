@@ -8,7 +8,7 @@ export function sectionResult (result) {
     return ''
   }
 
-  const output = `## Result: ${'`' + result.name + '`'}`
+  const output = `### Result: ${'`' + result.name + '`'}`
 
   if (!result.schema.properties) {
     return `${output}`

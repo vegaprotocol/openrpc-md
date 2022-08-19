@@ -15,7 +15,7 @@ export function method (m) {
   }
 
   return `
-# ${m.name}
+## ${m.name}
 > ${m.summary}
 
 ${m.description}
