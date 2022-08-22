@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs'
 import { parseOpenRPCDocument } from '@open-rpc/schema-utils-js'
 import { method } from './templates/method.js'
 import { wrapper } from './templates/wrapper.js'
+import { sectionIntro } from './templates/intro.js'
 
 const target = process.argv[2]
 const title = process.argv[3]
@@ -21,7 +22,8 @@ try {
 
   const output = json.methods.map(m => method(m)).join('---\r\n')
 
-  console.log(wrapper(output, title))
+  const intro = sectionIntro(json)
+  console.log(wrapper(output, intro, title))
 } catch (e) {
   console.error(`Unable to open or parse ${target}`)
 }

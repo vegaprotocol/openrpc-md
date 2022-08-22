@@ -42,7 +42,7 @@ export function sectionExamples (examples, methodName) {
   const output = examples.map(e => {
     const req = generateRequest(methodName, e.params)
     return `#### ${e.name}
-> ${e.description}
+${e.description}
 
 ##### Parameters
 ${codeBlock(req)}

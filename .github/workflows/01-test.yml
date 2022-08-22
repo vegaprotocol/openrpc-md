@@ -12,8 +12,8 @@ jobs:
     strategy:
       matrix:
         node-version:
-          - 16.x
           - 17.x
+          - 18.x
     steps:
       - name: Check out code
         uses: actions/checkout@v3

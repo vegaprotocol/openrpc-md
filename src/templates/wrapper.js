@@ -6,12 +6,13 @@
  * @param {string} title title to put in frontmatter
  * @returns string
  */
-export function wrapper (content, title) {
+export function wrapper (content, intro, title) {
   return `---
     title: ${title}
-    hide_title: true
+---
+${intro}
+
 ---
 
-${content}
-`
+${content}`
 }

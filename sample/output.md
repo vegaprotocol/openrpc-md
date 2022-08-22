@@ -1,11 +1,19 @@
 ---
-    title: OpenRPC Example
-    hide_title: true
+    title: Sample wallet API
+---
+- [session.connect_wallet](#sessionconnect_wallet): Initiates a connection between a wallet and a third-party application.
+- [session.disconnect_wallet](#sessiondisconnect_wallet): Ends the connection between the third-party application and the wallet.
+- [session.get_permissions](#sessionget_permissions): Returns the permissions set on the wallet for the third-party application.
+- [session.request_permissions](#sessionrequest_permissions): Requests permissions update for the third-party application.
+- [session.list_keys](#sessionlist_keys): Returns the keys the client has allowed the third-party application to have access to.
+- [session.send_transaction](#sessionsend_transaction): Send a transaction to the network.
+- [session.get_chain_id](#sessionget_chain_id): Returns the chain ID of the network in use.
+
 ---
 
 
-## session.connect_wallet
-> Initiates a connection between a wallet and a third-party application.
+
+## `session.connect_wallet`
 
 This method initiates a connection between a wallet and a third-party application.
 
@@ -29,9 +37,14 @@ This method should be the entry point of every third-party application. Once con
 
 ### Result: `token`
 
+### Errors
+- **Client error** (3000): the client closed the connection
+- **Client error** (3001): the client rejected the request
+- **Server error** (-32001): the request has been interrupted
+
 ### Examples
 #### Accepting a connection from "vega.xyz"
-> The third-party application "vega.xyz" requests a connection to a wallet and the client accepts.
+The third-party application "vega.xyz" requests a connection to a wallet and the client accepts.
 
 ##### Parameters
 ```json
@@ -55,16 +68,10 @@ This method should be the entry point of every third-party application. Once con
 }
 ```
 
-
-
-### Errors
-- **Client error** (3000): the client closed the connection
-- **Client error** (3001): the client rejected the request
-- **Server error** (-32001): the request has been interrupted
 ---
 
-## session.disconnect_wallet
-> Ends the connection between the third-party application and the wallet.
+
+## `session.disconnect_wallet`
 
 This method ends the connection between the third-party application and the wallet. The token is, then, no longer valid.
 
@@ -77,9 +84,11 @@ Calling this method with an invalid token doesn't fail.
 
 ### Result: `No result`
 
+
+
 ### Examples
 #### Disconnection from "vega.xyz"
-> The third-party application "vega.xyz" requests a disconnection to a wallet using a valid token.
+The third-party application "vega.xyz" requests a disconnection to a wallet using a valid token.
 
 ##### Parameters
 ```json
@@ -101,13 +110,10 @@ Calling this method with an invalid token doesn't fail.
 }
 ```
 
-
-
-
 ---
 
-## session.get_permissions
-> Returns the permissions set on the wallet for the third-party application.
+
+## `session.get_permissions`
 
 This method returns the permissions set on the wallet for the third-party application.
 
@@ -123,9 +129,11 @@ This method should be called, by the third-party application, right after it suc
 |------------------|--------|--------|---------|
 | public_keys | string | The different access modes a permission can have. | -|
 
+
+
 ### Examples
 #### Get permissions set for "vega.xyz"
-> The third-party application "vega.xyz" wants to know the permissions that have been set on the wallet in use.
+The third-party application "vega.xyz" wants to know the permissions that have been set on the wallet in use.
 
 ##### Parameters
 ```json
@@ -149,13 +157,10 @@ This method should be called, by the third-party application, right after it suc
 }
 ```
 
-
-
-
 ---
 
-## session.request_permissions
-> Requests permissions update for the third-party application.
+
+## `session.request_permissions`
 
 This method allows a third-party application to request new permissions to access the methods it requires.
 
@@ -174,9 +179,14 @@ The client has to review the permissions.
 |------------------|--------|--------|---------|
 | public_keys | string | The different access modes a permission can have. | -|
 
+### Errors
+- **Client error** (3000): the client closed the connection
+- **Client error** (3001): the client rejected the request
+- **Server error** (-32001): the request has been interrupted
+
 ### Examples
 #### Updating permissions for "vega.xyz"
-> The third-party application "vega.xyz" requests an update of its permissions and the client accepts.
+The third-party application "vega.xyz" requests an update of its permissions and the client accepts.
 
 ##### Parameters
 ```json
@@ -207,7 +217,7 @@ The client has to review the permissions.
 
 
 #### Updating permissions for "vega.xyz" with omitted permission
-> The third-party application "vega.xyz" omits a permission during the update and the client accepts. This automatically marks the omitted permission as revoked.
+The third-party application "vega.xyz" omits a permission during the update and the client accepts. This automatically marks the omitted permission as revoked.
 
 ##### Parameters
 ```json
@@ -234,16 +244,10 @@ The client has to review the permissions.
 }
 ```
 
-
-
-### Errors
-- **Client error** (3000): the client closed the connection
-- **Client error** (3001): the client rejected the request
-- **Server error** (-32001): the request has been interrupted
 ---
 
-## session.list_keys
-> Returns the keys the client has allowed the third-party application to have access to.
+
+## `session.list_keys`
 
 This method returns the keys the client has allowed the third-party application to have access to.
 
@@ -256,9 +260,12 @@ It requires a `read` access on `public_keys`.
 
 ### Result: `keys`
 
+### Errors
+- **Application error** (2000): a "read" access on public keys is required
+
 ### Examples
 #### List keys allowed on "vega.xyz"
-> The third-party application "vega.xyz" wants to list the public keys it has access to.
+The third-party application "vega.xyz" wants to list the public keys it has access to.
 
 ##### Parameters
 ```json
@@ -283,14 +290,10 @@ It requires a `read` access on `public_keys`.
 }
 ```
 
-
-
-### Errors
-- **Application error** (2000): a "read" access on public keys is required
 ---
 
-## session.send_transaction
-> Send a transaction to the network.
+
+## `session.send_transaction`
 
 This method sends a transaction to the network.
 
@@ -301,7 +304,7 @@ The client has to review the transaction.
 |------------------|--------|--------|
 | **token** | string | - |
 | **publicKey** | string | - |
-| **sendingMode** | string | The chosen mode to send the transaction:- `TYPE_SYNC` returns the result of running the transaction.- `TYPE_ASYNC` returns right away without waiting to hear if the transaction is even valid.- `TYPE_COMMIT` waits until the transaction is committed in a block or until some timeout is reached or returns return right away if the transaction is not valid. |
+| **sendingMode** | string | The chosen mode to send the transaction:<br />- `TYPE_SYNC` returns the result of running the transaction.<br />- `TYPE_ASYNC` returns right away without waiting to hear if the transaction is even valid.<br />- `TYPE_COMMIT` waits until the transaction is committed in a block or until some timeout is reached or returns return right away if the transaction is not valid. |
 | **encodedTransaction** | string | - |
 
 ### Result: `transaction_status`
@@ -311,9 +314,18 @@ The client has to review the transaction.
 | sentAt | string | The date when the transaction has been sent to the network. The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | `"2021-02-18T21:54:42.123Z"`|
 | transactionHash | string | The hash of the transaction. It's used to uniquely identify the transaction and can be used in the block explorer to retrieve it. | -|
 
+### Errors
+- **Network error** (1000): no healthy node available
+- **Network error** (1000): couldn't get information about the last block on the network
+- **Network error** (1000): the transaction failed
+- **Application error** (2000): the public key is not allowed to be used
+- **Client error** (3000): the client closed the connection
+- **Client error** (3001): the client rejected the request
+- **Server error** (-32001): the request has been interrupted
+
 ### Examples
 #### Sending a transaction for "vega.xyz"
-> The third-party application "vega.xyz" requests to send a transaction and the client accepts.
+The third-party application "vega.xyz" requests to send a transaction and the client accepts.
 
 ##### Parameters
 ```json
@@ -342,20 +354,10 @@ The client has to review the transaction.
 }
 ```
 
-
-
-### Errors
-- **Network error** (1000): no healthy node available
-- **Network error** (1000): couldn't get information about the last block on the network
-- **Network error** (1000): the transaction failed
-- **Application error** (2000): the public key is not allowed to be used
-- **Client error** (3000): the client closed the connection
-- **Client error** (3001): the client rejected the request
-- **Server error** (-32001): the request has been interrupted
 ---
 
-## session.get_chain_id
-> Returns the chain ID of the network in use.
+
+## `session.get_chain_id`
 
 This method returns the chain ID of the network in use.
 
@@ -370,9 +372,13 @@ None required
 |------------------|--------|--------|---------|
 | chainID | string | The identifier for the chain | `"test-chain-Thz9c6"`|
 
+### Errors
+- **Network error** (1000): no healthy node available
+- **Network error** (1000): couldn't get information about the last block on the network
+
 ### Examples
 #### Fetching the chain ID
-> An example of requesting the chain's ID
+An example of requesting the chain's ID
 
 ##### Parameters
 ```json
@@ -393,11 +399,5 @@ None required
     }
 }
 ```
-
-
-
-### Errors
-- **Network error** (1000): no healthy node available
-- **Network error** (1000): couldn't get information about the last block on the network
 
 

@@ -3,6 +3,8 @@ import { sectionResult } from './result.js'
 import { sectionErrors } from './errors.js'
 import { sectionExamples } from './examples.js'
 
+const INLNECODEMARKER = '`'
+
 /**
  * Generate the markdown output for an OpenRPC method
  *
@@ -15,8 +17,8 @@ export function method (m) {
   }
 
   return `
-## ${m.name}
-> ${m.summary}
+
+## ${INLNECODEMARKER}${m.name}${INLNECODEMARKER}
 
 ${m.description}
 
@@ -24,8 +26,7 @@ ${sectionParameters(m.params)}
 
 ${sectionResult(m.result)}
 
-${sectionExamples(m.examples, m.name)}
-
 ${sectionErrors(m.errors)}
-`
+
+${sectionExamples(m.examples, m.name)}`
 }

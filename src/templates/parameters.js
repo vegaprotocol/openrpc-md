@@ -17,7 +17,7 @@ export function sectionParameters (params) {
 |------------------|--------|--------|`
     body = params.map(value => {
       const name = value.required ? `**${value.name}**` : `${value.name} _(Optional)_`
-      return `| ${name} | ${value.schema.type} | ${value.description ? value.description.replace(/(\r\n|\n|\r)/gm, '') : '-'} |`
+      return `| ${name} | ${value.schema.type} | ${value.description ? value.description.replace(/(\r\n|\n|\r)/gm, '<br />') : '-'} |`
     }).join('\r\n')
   } else {
     body = 'None required'
