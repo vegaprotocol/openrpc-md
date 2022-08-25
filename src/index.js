@@ -20,6 +20,8 @@ try {
   jsonRaw = readFileSync(target)
   json = await parseOpenRPCDocument(jsonRaw.toString())
 
+  // console.dir(json, { depth: 100 })
+
   const output = json.methods.map(m => method(m)).join('---\r\n')
 
   const intro = sectionIntro(json)

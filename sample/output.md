@@ -1,5 +1,5 @@
 ---
-    title: Sample wallet API
+    title: OpenRPC Wallet API
 ---
 - [session.connect_wallet](#sessionconnect_wallet): Initiates a connection between a wallet and a third-party application.
 - [session.disconnect_wallet](#sessiondisconnect_wallet): Ends the connection between the third-party application and the wallet.
@@ -80,7 +80,7 @@ Calling this method with an invalid token doesn't fail.
 ### Parameters
 | Parameter name  |  Type  |  Description |
 |------------------|--------|--------|
-| **token** | string | - |
+| **token** | string | A unique connection token randomly generated for each new connection. It's used to access the protected methods. |
 
 ### Result: `No result`
 
@@ -122,7 +122,7 @@ This method should be called, by the third-party application, right after it suc
 ### Parameters
 | Parameter name  |  Type  |  Description |
 |------------------|--------|--------|
-| **token** | string | - |
+| **token** | string | A unique connection token randomly generated for each new connection. It's used to access the protected methods. |
 
 ### Result: `permissions`
 | Result key  |  Type  |  Description | Example |
@@ -171,8 +171,8 @@ The client has to review the permissions.
 ### Parameters
 | Parameter name  |  Type  |  Description |
 |------------------|--------|--------|
-| **token** | string | - |
-| **requestedPermissions** | object | - |
+| **token** | string | A unique connection token randomly generated for each new connection. It's used to access the protected methods. |
+| **requestedPermissions** | object | The description of the permissions a third-party application has.<br /><br />`{ "public_keys": "read" }`<br />`{ "public_keys": "write" }`<br />`{ "public_keys": "none" }` |
 
 ### Result: `permissions`
 | Result key  |  Type  |  Description | Example |
@@ -256,7 +256,7 @@ It requires a `read` access on `public_keys`.
 ### Parameters
 | Parameter name  |  Type  |  Description |
 |------------------|--------|--------|
-| **token** | string | - |
+| **token** | string | A unique connection token randomly generated for each new connection. It's used to access the protected methods. |
 
 ### Result: `keys`
 
@@ -302,10 +302,10 @@ The client has to review the transaction.
 ### Parameters
 | Parameter name  |  Type  |  Description |
 |------------------|--------|--------|
-| **token** | string | - |
-| **publicKey** | string | - |
+| **token** | string | A unique connection token randomly generated for each new connection. It's used to access the protected methods. |
+| **publicKey** | string | The Vega public key to use. |
 | **sendingMode** | string | The chosen mode to send the transaction:<br />- `TYPE_SYNC` returns the result of running the transaction.<br />- `TYPE_ASYNC` returns right away without waiting to hear if the transaction is even valid.<br />- `TYPE_COMMIT` waits until the transaction is committed in a block or until some timeout is reached or returns return right away if the transaction is not valid. |
-| **encodedTransaction** | string | - |
+| **encodedTransaction** | string | The transaction encoded using base-64. |
 
 ### Result: `transaction_status`
 | Result key  |  Type  |  Description | Example |
