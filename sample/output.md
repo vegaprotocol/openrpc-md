@@ -8,6 +8,11 @@
 - [session.list_keys](#sessionlist_keys): Returns the keys the client has allowed the third-party application to have access to.
 - [session.send_transaction](#sessionsend_transaction): Send a transaction to the network.
 - [session.get_chain_id](#sessionget_chain_id): Returns the chain ID of the network in use.
+- [admin.create_wallet](#admincreate_wallet): Creates a wallet with its first key-pair.
+- [admin.import_wallet](#adminimport_wallet): Import a wallet with its first key-pair with a recovery phrase and a version.
+- [admin.describe_wallet](#admindescribe_wallet): Returns the wallet base information.
+- [admin.list_wallets](#adminlist_wallets): Returns the list of the wallets present on the computer.
+- [admin.remove_wallet](#adminremove_wallet): Removes a wallet from the computer.
 
 ---
 
@@ -197,7 +202,7 @@ The third-party application "vega.xyz" requests an update of its permissions and
     "params": {
         "token": "hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG",
         "requestedPermissions": {
-            "public_key": "read"
+            "public_keys": "read"
         }
     }
 }
@@ -209,7 +214,7 @@ The third-party application "vega.xyz" requests an update of its permissions and
     "name": "Success",
     "value": {
         "permissions": {
-            "public_key": "read"
+            "public_keys": "read"
         }
     }
 }
@@ -238,7 +243,7 @@ The third-party application "vega.xyz" omits a permission during the update and 
     "name": "Success",
     "value": {
         "permissions": {
-            "public_key": "none"
+            "public_keys": "none"
         }
     }
 }
@@ -316,7 +321,7 @@ The client has to review the transaction.
 
 ### Errors
 - **Network error** (1000): no healthy node available
-- **Network error** (1000): couldn't get information about the last block on the network
+- **Network error** (1000): could not get information about the last block on the network
 - **Network error** (1000): the transaction failed
 - **Application error** (2000): the public key is not allowed to be used
 - **Client error** (3000): the client closed the connection
@@ -374,7 +379,7 @@ None required
 
 ### Errors
 - **Network error** (1000): no healthy node available
-- **Network error** (1000): couldn't get information about the last block on the network
+- **Network error** (1000): could not get information about the last block on the network
 
 ### Examples
 #### Fetching the chain ID
@@ -397,6 +402,284 @@ An example of requesting the chain's ID
     "value": {
         "chainID": "test-chain-Thz9c6"
     }
+}
+```
+
+---
+
+
+## `admin.create_wallet`
+
+This method creates a HD wallet (version 2) and generates its first key-pair the cryptographic algorithm ed25519.
+
+The passphrase will be used to encrypt the wallet and its keys.
+
+If successful, the wallet is ready to use for sending transaction.
+
+### Parameters
+| Parameter name  |  Type  |  Description |
+|------------------|--------|--------|
+| **wallet** | string | - |
+| **passphrase** | string | - |
+
+### Result: `Success`
+| Result key  |  Type  |  Description | Example |
+|------------------|--------|--------|---------|
+| wallet | object | the newly generated wallet | the newly generated wallet} |
+| key | object | the first public key generated | the first public key generated} |
+
+
+
+### Examples
+#### Creating a wallet
+undefined
+
+##### Parameters
+```json
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "admin.create_wallet",
+    "params": {
+        "wallet": "my-wallet",
+        "passphrase": "this-is-not-a-good-passphrase"
+    }
+}
+```
+
+##### Result
+```json
+{
+    "name": "Success",
+    "value": {
+        "wallet": {
+            "name": "my-wallet",
+            "version": 2,
+            "recoveryPhrase": "swing ceiling chaos green put insane ripple desk match tip melt usual shrug turkey renew icon parade veteran lens govern path rough page render",
+            "filePath": "some/path/to/my-wallet"
+        },
+        "key": {
+            "publicKey": "b5fd9d3c4ad553cb3196303b6e6df7f484cf7f5331a572a45031239fd71ad8a0",
+            "algorithm": {
+                "name": "vega/ed25519",
+                "version": 1
+            },
+            "meta": [
+                {
+                    "key": "name",
+                    "value": "my-wallet key 1"
+                }
+            ]
+        }
+    }
+}
+```
+
+---
+
+
+## `admin.import_wallet`
+
+This method imports a wallet using the specified recovery phrase and wallet version, and generates its first key-pair.
+
+The passphrase will be used to encrypt the wallet and its keys.
+
+If successful, the wallet is ready to use for sending transaction.
+
+### Parameters
+| Parameter name  |  Type  |  Description |
+|------------------|--------|--------|
+| **wallet** | string | - |
+| **passphrase** | string | - |
+| **recoveryPhrase** | string | - |
+| **version** | number | - |
+
+### Result: `Success`
+| Result key  |  Type  |  Description | Example |
+|------------------|--------|--------|---------|
+| wallet | object | the imported wallet | the imported wallet} |
+| key | object | the first public key generated | the first public key generated} |
+
+
+
+### Examples
+#### Importing a wallet
+undefined
+
+##### Parameters
+```json
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "admin.import_wallet",
+    "params": {
+        "wallet": "my-wallet",
+        "passphrase": "this-is-not-a-good-passphrase",
+        "recoveryPhrase": "swing ceiling chaos green put insane ripple desk match tip melt usual shrug turkey renew icon parade veteran lens govern path rough page render",
+        "version": "2"
+    }
+}
+```
+
+##### Result
+```json
+{
+    "name": "Success",
+    "value": {
+        "wallet": {
+            "name": "my-wallet",
+            "version": 2,
+            "filePath": "some/path/to/my-wallet"
+        },
+        "key": {
+            "publicKey": "b5fd9d3c4ad553cb3196303b6e6df7f484cf7f5331a572a45031239fd71ad8a0",
+            "algorithm": {
+                "name": "vega/ed25519",
+                "version": 1
+            },
+            "meta": [
+                {
+                    "key": "name",
+                    "value": "my-wallet key 1"
+                }
+            ]
+        }
+    }
+}
+```
+
+---
+
+
+## `admin.describe_wallet`
+
+This method returns the wallet base information such as its name, ID, type and version. It doesn't return the keys nor the permissions.
+
+### Parameters
+| Parameter name  |  Type  |  Description |
+|------------------|--------|--------|
+| **wallet** | string | - |
+| **passphrase** | string | - |
+
+### Result: `Success`
+| Result key  |  Type  |  Description | Example |
+|------------------|--------|--------|---------|
+| name | string | - | -} |
+| version | number | - | -} |
+| id | string | - | -} |
+| type | string | - | -} |
+
+
+
+### Examples
+#### Getting wallet base information
+undefined
+
+##### Parameters
+```json
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "admin.describe_wallet",
+    "params": {
+        "wallet": "my-wallet",
+        "passphrase": "this-is-not-a-good-passphrase"
+    }
+}
+```
+
+##### Result
+```json
+{
+    "name": "Success",
+    "value": {
+        "name": "my-wallet",
+        "version": 2,
+        "type": "HD Wallet",
+        "ID": "7ffa36b2fb99d8404e9448f0d2ce944055e64c36d895d1fde044c867bfdf779f"
+    }
+}
+```
+
+---
+
+
+## `admin.list_wallets`
+
+This method returns the list of the wallets present on the computer. It is alphabetically sorted.
+
+### Parameters
+
+None required
+
+### Result: `Success`
+
+
+
+### Examples
+#### Getting the list of wallets
+undefined
+
+##### Parameters
+```json
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "admin.list_wallets",
+    "params": []
+}
+```
+
+##### Result
+```json
+{
+    "name": "Success",
+    "value": {
+        "wallets": [
+            "wallet-1",
+            "wallet-2"
+        ]
+    }
+}
+```
+
+---
+
+
+## `admin.remove_wallet`
+
+This method removes a wallet from the computer.
+
+### Parameters
+| Parameter name  |  Type  |  Description |
+|------------------|--------|--------|
+| **wallet** | string | - |
+
+### Result: `Success`
+
+
+
+### Examples
+#### Remove a wallet
+undefined
+
+##### Parameters
+```json
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "admin.remove_wallet",
+    "params": {
+        "wallet": "my-wallet"
+    }
+}
+```
+
+##### Result
+```json
+{
+    "name": "Success",
+    "value": {}
 }
 ```
 
