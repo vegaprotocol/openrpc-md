@@ -1,6 +1,6 @@
 {
   "name": "@vegaprotocol/openrpc-md",
-  "version": "1.0.6",
+  "version": "1.1.1",
   "description": "Generate a single markdown from a simplistic openrpc doc",
   "type": "module",
   "main": "src/index.js",
@@ -10,7 +10,7 @@
     "setup": "husky install",
     "test": "tape src/**/*.test.js | tap-arc",
     "lint": "standard src/**/*.js",
-    "generate-sample": "node src/index.js ./sample/openrpc.json 'OpenRPC Example' > ./sample/output.md"
+    "generate-sample": "node src/index.js ./sample/openrpc.json 'OpenRPC Wallet API' > ./sample/output.md"
   },
   "keywords": [
     "open-rpc"

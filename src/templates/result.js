@@ -3,6 +3,8 @@
  *
  * @param result
  */
+const CODE = '`'
+
 export function sectionResult (result) {
   if (!result || !result.schema) {
     return ''
@@ -18,8 +20,20 @@ export function sectionResult (result) {
 |------------------|--------|--------|---------|`
   const body = Object.keys(result.schema.properties).map(key => {
     const value = result.schema.properties[key]
+    let altDescription = value?.schema?.description ? value.schema.description : value.description ? value.description : '-'
 
-    return `| ${key} | ${value.type} | ${value.description.replace('\n\n', ' ')} | ${value.examples ? '`' + JSON.stringify(value.examples[0]) + '`' : '-'}|`
+    const altExamples = value?.schema?.description ? value.schema.description : value.description ? value.description : '-'
+
+    // Currently very hardcoded to the permissions type
+    if (value?.schema?.properties) {
+      altDescription += '<br /><br />' + Object.keys(value.schema.properties).map(key => {
+        const prop = value.schema.properties[key]
+
+        return prop.enum.map(v => `${CODE}{ "${key}": "${v}" }${CODE}`).join('<br />')
+      }).join('<br />')
+    }
+
+    return `| ${key} | ${value.type} | ${altDescription.replace(/(\r\n|\n|\r)/gm, '<br />')} | ${altExamples.replace(/(\r\n|\n|\r)/gm, '<br />')}} |`
   }).join('\r\n')
 
   return `${output}

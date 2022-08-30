@@ -3,6 +3,9 @@
  *
  * @param params
  */
+
+const CODE = '`'
+
 export function sectionParameters (params) {
   if (!params) {
     return ''
@@ -17,7 +20,19 @@ export function sectionParameters (params) {
 |------------------|--------|--------|`
     body = params.map(value => {
       const name = value.required ? `**${value.name}**` : `${value.name} _(Optional)_`
-      return `| ${name} | ${value.schema.type} | ${value.description ? value.description.replace(/(\r\n|\n|\r)/gm, '<br />') : '-'} |`
+
+      let altDescription = value?.schema?.description ? value.schema.description : value.description ? value.description : '-'
+
+      // Currently very hardcoded to the permissions type
+      if (value?.schema?.properties) {
+        altDescription += '<br /><br />' + Object.keys(value.schema.properties).map(key => {
+          const prop = value.schema.properties[key]
+
+          return prop.enum.map(v => `${CODE}{ "${key}": "${v}" }${CODE}`).join('<br />')
+        }).join('<br />')
+      }
+
+      return `| ${name} | ${value.schema.type} | ${altDescription.replace(/(\r\n|\n|\r)/gm, '<br />')} |`
     }).join('\r\n')
   } else {
     body = 'None required'

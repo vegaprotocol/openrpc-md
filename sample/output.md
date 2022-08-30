@@ -1,5 +1,5 @@
 ---
-    title: Sample wallet API
+    title: OpenRPC Wallet API
 ---
 - [session.connect_wallet](#sessionconnect_wallet): Initiates a connection between a wallet and a third-party application.
 - [session.disconnect_wallet](#sessiondisconnect_wallet): Ends the connection between the third-party application and the wallet.
@@ -80,7 +80,7 @@ Calling this method with an invalid token doesn't fail.
 ### Parameters
 | Parameter name  |  Type  |  Description |
 |------------------|--------|--------|
-| **token** | string | - |
+| **token** | string | A unique connection token randomly generated for each new connection. It's used to access the protected methods. |
 
 ### Result: `No result`
 
@@ -122,12 +122,12 @@ This method should be called, by the third-party application, right after it suc
 ### Parameters
 | Parameter name  |  Type  |  Description |
 |------------------|--------|--------|
-| **token** | string | - |
+| **token** | string | A unique connection token randomly generated for each new connection. It's used to access the protected methods. |
 
 ### Result: `permissions`
 | Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
-| public_keys | string | The different access modes a permission can have. | -|
+| public_keys | string | The different access modes a permission can have. | The different access modes a permission can have.} |
 
 
 
@@ -171,13 +171,13 @@ The client has to review the permissions.
 ### Parameters
 | Parameter name  |  Type  |  Description |
 |------------------|--------|--------|
-| **token** | string | - |
-| **requestedPermissions** | object | - |
+| **token** | string | A unique connection token randomly generated for each new connection. It's used to access the protected methods. |
+| **requestedPermissions** | object | The description of the permissions a third-party application has.<br /><br />`{ "public_keys": "read" }`<br />`{ "public_keys": "write" }`<br />`{ "public_keys": "none" }` |
 
 ### Result: `permissions`
 | Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
-| public_keys | string | The different access modes a permission can have. | -|
+| public_keys | string | The different access modes a permission can have. | The different access modes a permission can have.} |
 
 ### Errors
 - **Client error** (3000): the client closed the connection
@@ -256,7 +256,7 @@ It requires a `read` access on `public_keys`.
 ### Parameters
 | Parameter name  |  Type  |  Description |
 |------------------|--------|--------|
-| **token** | string | - |
+| **token** | string | A unique connection token randomly generated for each new connection. It's used to access the protected methods. |
 
 ### Result: `keys`
 
@@ -302,17 +302,17 @@ The client has to review the transaction.
 ### Parameters
 | Parameter name  |  Type  |  Description |
 |------------------|--------|--------|
-| **token** | string | - |
-| **publicKey** | string | - |
+| **token** | string | A unique connection token randomly generated for each new connection. It's used to access the protected methods. |
+| **publicKey** | string | The Vega public key to use. |
 | **sendingMode** | string | The chosen mode to send the transaction:<br />- `TYPE_SYNC` returns the result of running the transaction.<br />- `TYPE_ASYNC` returns right away without waiting to hear if the transaction is even valid.<br />- `TYPE_COMMIT` waits until the transaction is committed in a block or until some timeout is reached or returns return right away if the transaction is not valid. |
-| **encodedTransaction** | string | - |
+| **encodedTransaction** | string | The transaction encoded using base-64. |
 
 ### Result: `transaction_status`
 | Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
-| receivedAt | string | The date when the API received the request to send the transaction. The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | `"2021-02-18T21:54:42.123Z"`|
-| sentAt | string | The date when the transaction has been sent to the network. The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | `"2021-02-18T21:54:42.123Z"`|
-| transactionHash | string | The hash of the transaction. It's used to uniquely identify the transaction and can be used in the block explorer to retrieve it. | -|
+| receivedAt | string | The date when the API received the request to send the transaction.<br /><br />The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | The date when the API received the request to send the transaction.<br /><br />The time is a quoted string in RFC 3339 format, with sub-second precision added if present.} |
+| sentAt | string | The date when the transaction has been sent to the network.<br /><br />The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | The date when the transaction has been sent to the network.<br /><br />The time is a quoted string in RFC 3339 format, with sub-second precision added if present.} |
+| transactionHash | string | The hash of the transaction. It's used to uniquely identify the transaction and can be used in the block explorer to retrieve it. | The hash of the transaction. It's used to uniquely identify the transaction and can be used in the block explorer to retrieve it.} |
 
 ### Errors
 - **Network error** (1000): no healthy node available
@@ -370,7 +370,7 @@ None required
 ### Result: `chainID`
 | Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
-| chainID | string | The identifier for the chain | `"test-chain-Thz9c6"`|
+| chainID | string | The identifier for the chain | The identifier for the chain} |
 
 ### Errors
 - **Network error** (1000): no healthy node available
