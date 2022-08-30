@@ -36,6 +36,9 @@ This method should be the entry point of every third-party application. Once con
 | **hostname** | string | The name of the third-party application initiating the connection. |
 
 ### Result: `token`
+| Result key  |  Type  |  Description | Example |
+|------------------|--------|--------|---------|
+| token | string | A unique connection token randomly generated for each new connection. It's used to access the protected methods. | - |
 
 ### Errors
 - **Client error** (3000): the client closed the connection
@@ -82,7 +85,7 @@ Calling this method with an invalid token doesn't fail.
 |------------------|--------|--------|
 | **token** | string | A unique connection token randomly generated for each new connection. It's used to access the protected methods. |
 
-### Result: `No result`
+
 
 
 
@@ -127,7 +130,7 @@ This method should be called, by the third-party application, right after it suc
 ### Result: `permissions`
 | Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
-| public_keys | string | The different access modes a permission can have. | The different access modes a permission can have.} |
+| public_keys | string | The different access modes a permission can have. | `{ "public_keys": "read" }`<br />`{ "public_keys": "write" }`<br />`{ "public_keys": "none" }` |
 
 
 
@@ -177,7 +180,7 @@ The client has to review the permissions.
 ### Result: `permissions`
 | Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
-| public_keys | string | The different access modes a permission can have. | The different access modes a permission can have.} |
+| public_keys | string | The different access modes a permission can have. | `{ "public_keys": "read" }`<br />`{ "public_keys": "write" }`<br />`{ "public_keys": "none" }` |
 
 ### Errors
 - **Client error** (3000): the client closed the connection
@@ -259,6 +262,9 @@ It requires a `read` access on `public_keys`.
 | **token** | string | A unique connection token randomly generated for each new connection. It's used to access the protected methods. |
 
 ### Result: `keys`
+| Result key  |  Type  |  Description | Example |
+|------------------|--------|--------|---------|
+| keys | array | string | - |
 
 ### Errors
 - **Application error** (2000): a "read" access on public keys is required
@@ -310,9 +316,9 @@ The client has to review the transaction.
 ### Result: `transaction_status`
 | Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
-| receivedAt | string | The date when the API received the request to send the transaction.<br /><br />The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | The date when the API received the request to send the transaction.<br /><br />The time is a quoted string in RFC 3339 format, with sub-second precision added if present.} |
-| sentAt | string | The date when the transaction has been sent to the network.<br /><br />The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | The date when the transaction has been sent to the network.<br /><br />The time is a quoted string in RFC 3339 format, with sub-second precision added if present.} |
-| transactionHash | string | The hash of the transaction. It's used to uniquely identify the transaction and can be used in the block explorer to retrieve it. | The hash of the transaction. It's used to uniquely identify the transaction and can be used in the block explorer to retrieve it.} |
+| receivedAt | string | The date when the API received the request to send the transaction.<br /><br />The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | - |
+| sentAt | string | The date when the transaction has been sent to the network.<br /><br />The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | - |
+| transactionHash | string | The hash of the transaction. It's used to uniquely identify the transaction and can be used in the block explorer to retrieve it. | - |
 
 ### Errors
 - **Network error** (1000): no healthy node available
@@ -370,7 +376,7 @@ None required
 ### Result: `chainID`
 | Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
-| chainID | string | The identifier for the chain | The identifier for the chain} |
+| chainID | string | The identifier for the chain | - |
 
 ### Errors
 - **Network error** (1000): no healthy node available
