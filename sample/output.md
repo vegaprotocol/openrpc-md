@@ -1,3 +1,549 @@
+{
+  openrpc: '1.2.6',
+  info: { version: '1.0.0', title: 'Wallet API' },
+  methods: [
+    {
+      name: 'session.connect_wallet',
+      summary: 'Initiates a connection between a wallet and a third-party application.',
+      description: 'This method initiates a connection between a wallet and a third-party application.\n' +
+        '\n' +
+        'The client has to review the request, and, if they accept it, select the wallet they want to use for this connection.\n' +
+        '\n' +
+        'A connection token is generated and returned to the third-party application. This token is meant to be used in protected methods.\n' +
+        '\n' +
+        '**Supported connections:**\n' +
+        '- Multiple wallets connected for the same hostname. Each connection will have a different token.\n' +
+        '- A single wallet connected to multiple hostnames. Each connection will have a different token.\n' +
+        '- Combination of the above setups.\n' +
+        '\n' +
+        "However, it's not possible to have multiple connections on the same wallet for the same hostname. The previous connection will be terminated and a new token will be generated.\n" +
+        '\n' +
+        'This method should be the entry point of every third-party application. Once connected, see the method `get_permissions`.',
+      tags: [ { name: 'connection' } ],
+      paramStructure: 'by-name',
+      params: [
+        {
+          name: 'hostname',
+          description: 'The name of the third-party application initiating the connection.',
+          required: true,
+          schema: { type: 'string' }
+        }
+      ],
+      result: {
+        name: 'token',
+        schema: {
+          type: 'string',
+          description: "A unique connection token randomly generated for each new connection. It's used to access the protected methods."
+        }
+      },
+      errors: [
+        {
+          code: 3000,
+          message: 'Client error',
+          data: 'the client closed the connection'
+        },
+        {
+          code: 3001,
+          message: 'Client error',
+          data: 'the client rejected the request'
+        },
+        {
+          code: -32001,
+          message: 'Server error',
+          data: 'the request has been interrupted'
+        }
+      ],
+      examples: [
+        {
+          name: 'Accepting a connection from "vega.xyz"',
+          description: 'The third-party application "vega.xyz" requests a connection to a wallet and the client accepts.',
+          params: [ { name: 'hostname', value: 'vega.xyz' } ],
+          result: {
+            name: 'Success',
+            value: {
+              token: 'hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG'
+            }
+          }
+        }
+      ]
+    },
+    {
+      name: 'session.disconnect_wallet',
+      summary: 'Ends the connection between the third-party application and the wallet.',
+      description: 'This method ends the connection between the third-party application and the wallet. The token is, then, no longer valid.\n' +
+        '\n' +
+        "Calling this method with an invalid token doesn't fail.",
+      tags: [ { name: 'connection' } ],
+      paramStructure: 'by-name',
+      params: [
+        {
+          name: 'token',
+          required: true,
+          schema: {
+            type: 'string',
+            description: "A unique connection token randomly generated for each new connection. It's used to access the protected methods."
+          }
+        }
+      ],
+      result: { name: 'No result', schema: {} },
+      examples: [
+        {
+          name: 'Disconnection from "vega.xyz"',
+          description: 'The third-party application "vega.xyz" requests a disconnection to a wallet using a valid token.',
+          params: [
+            {
+              name: 'token',
+              value: 'hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG'
+            }
+          ],
+          result: { name: 'Success', value: null }
+        }
+      ]
+    },
+    {
+      name: 'session.get_permissions',
+      summary: 'Returns the permissions set on the wallet for the third-party application.',
+      description: 'This method returns the permissions set on the wallet for the third-party application.\n' +
+        '\n' +
+        "This method should be called, by the third-party application, right after it successfully connected to a wallet, to ensure it has sufficient permissions to call the method it relies on. If the third-party application doesn't have enough permissions, see the method `request_permissions`.",
+      tags: [ { name: 'permissions' } ],
+      paramStructure: 'by-name',
+      params: [
+        {
+          name: 'token',
+          required: true,
+          schema: {
+            type: 'string',
+            description: "A unique connection token randomly generated for each new connection. It's used to access the protected methods."
+          }
+        }
+      ],
+      result: {
+        name: 'permissions',
+        schema: {
+          type: 'object',
+          description: 'The description of the permissions a third-party application has.',
+          properties: {
+            public_keys: {
+              type: 'string',
+              description: 'The different access modes a permission can have.',
+              enum: [ 'read', 'write', 'none' ]
+            }
+          }
+        }
+      },
+      examples: [
+        {
+          name: 'Get permissions set for "vega.xyz"',
+          description: 'The third-party application "vega.xyz" wants to know the permissions that have been set on the wallet in use.',
+          params: [
+            {
+              name: 'token',
+              value: 'hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG'
+            }
+          ],
+          result: { name: 'Success', value: { public_keys: 'read' } }
+        }
+      ]
+    },
+    {
+      name: 'session.request_permissions',
+      summary: 'Requests permissions update for the third-party application.',
+      description: 'This method allows a third-party application to request new permissions to access the methods it requires.\n' +
+        '\n' +
+        'All permissions the third-party relies on have to be specified. If a permission is omitted, it will be considered as no longer required and, as a result, be automatically revoked.\n' +
+        '\n' +
+        'The client has to review the permissions.',
+      tags: [ { name: 'permissions' } ],
+      paramStructure: 'by-name',
+      params: [
+        {
+          name: 'token',
+          required: true,
+          schema: {
+            type: 'string',
+            description: "A unique connection token randomly generated for each new connection. It's used to access the protected methods."
+          }
+        },
+        {
+          name: 'requestedPermissions',
+          required: true,
+          schema: {
+            type: 'object',
+            description: 'The description of the permissions a third-party application has.',
+            properties: {
+              public_keys: {
+                type: 'string',
+                description: 'The different access modes a permission can have.',
+                enum: [ 'read', 'write', 'none' ]
+              }
+            }
+          }
+        }
+      ],
+      result: {
+        name: 'permissions',
+        schema: {
+          type: 'object',
+          description: 'The description of the permissions a third-party application has.',
+          properties: {
+            public_keys: {
+              type: 'string',
+              description: 'The different access modes a permission can have.',
+              enum: [ 'read', 'write', 'none' ]
+            }
+          }
+        }
+      },
+      errors: [
+        {
+          code: 3000,
+          message: 'Client error',
+          data: 'the client closed the connection'
+        },
+        {
+          code: 3001,
+          message: 'Client error',
+          data: 'the client rejected the request'
+        },
+        {
+          code: -32001,
+          message: 'Server error',
+          data: 'the request has been interrupted'
+        }
+      ],
+      examples: [
+        {
+          name: 'Updating permissions for "vega.xyz"',
+          description: 'The third-party application "vega.xyz" requests an update of its permissions and the client accepts.',
+          params: [
+            {
+              name: 'token',
+              value: 'hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG'
+            },
+            {
+              name: 'requestedPermissions',
+              value: { public_key: 'read' }
+            }
+          ],
+          result: {
+            name: 'Success',
+            value: { permissions: { public_key: 'read' } }
+          }
+        },
+        {
+          name: 'Updating permissions for "vega.xyz" with omitted permission',
+          description: 'The third-party application "vega.xyz" omits a permission during the update and the client accepts. This automatically marks the omitted permission as revoked.',
+          params: [
+            {
+              name: 'token',
+              value: 'hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG'
+            },
+            { name: 'requestedPermissions', value: {} }
+          ],
+          result: {
+            name: 'Success',
+            value: { permissions: { public_key: 'none' } }
+          }
+        }
+      ]
+    },
+    {
+      name: 'session.list_keys',
+      summary: 'Returns the keys the client has allowed the third-party application to have access to.',
+      description: 'This method returns the keys the client has allowed the third-party application to have access to.\n' +
+        '\n' +
+        'It requires a `read` access on `public_keys`.',
+      paramStructure: 'by-name',
+      params: [
+        {
+          name: 'token',
+          required: true,
+          schema: {
+            type: 'string',
+            description: "A unique connection token randomly generated for each new connection. It's used to access the protected methods."
+          }
+        }
+      ],
+      result: {
+        name: 'keys',
+        schema: { type: 'array', items: { type: 'string' } }
+      },
+      errors: [
+        {
+          code: 2000,
+          message: 'Application error',
+          data: 'a "read" access on public keys is required'
+        }
+      ],
+      examples: [
+        {
+          name: 'List keys allowed on "vega.xyz"',
+          description: 'The third-party application "vega.xyz" wants to list the public keys it has access to.',
+          params: [
+            {
+              name: 'token',
+              value: 'hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG'
+            }
+          ],
+          result: { name: 'Success', value: [ '0xdeadbeef', '0xcafedude' ] }
+        }
+      ]
+    },
+    {
+      name: 'session.send_transaction',
+      summary: 'Send a transaction to the network.',
+      description: 'This method sends a transaction to the network.\n' +
+        '\n' +
+        'The client has to review the transaction.',
+      tags: [ { name: 'transaction' } ],
+      paramStructure: 'by-name',
+      params: [
+        {
+          name: 'token',
+          required: true,
+          schema: {
+            type: 'string',
+            description: "A unique connection token randomly generated for each new connection. It's used to access the protected methods."
+          }
+        },
+        {
+          name: 'publicKey',
+          required: true,
+          schema: {
+            type: 'string',
+            description: 'The Vega public key to use.'
+          }
+        },
+        {
+          name: 'sendingMode',
+          required: true,
+          description: 'The chosen mode to send the transaction:\n' +
+            '- `TYPE_SYNC` returns the result of running the transaction.\n' +
+            '- `TYPE_ASYNC` returns right away without waiting to hear if the transaction is even valid.\n' +
+            '- `TYPE_COMMIT` waits until the transaction is committed in a block or until some timeout is reached or returns return right away if the transaction is not valid.',
+          schema: {
+            type: 'string',
+            enum: [ 'TYPE_SYNC', 'TYPE_ASYNC', 'TYPE_COMMIT' ]
+          }
+        },
+        {
+          name: 'encodedTransaction',
+          required: true,
+          schema: {
+            type: 'string',
+            description: 'The transaction encoded using base-64.'
+          }
+        }
+      ],
+      result: {
+        name: 'transaction_status',
+        schema: {
+          type: 'object',
+          properties: {
+            receivedAt: {
+              type: 'string',
+              description: 'The date when the API received the request to send the transaction.\n' +
+                '\n' +
+                'The time is a quoted string in RFC 3339 format, with sub-second precision added if present.',
+              examples: [ '2021-02-18T21:54:42.123Z' ]
+            },
+            sentAt: {
+              type: 'string',
+              description: 'The date when the transaction has been sent to the network.\n' +
+                '\n' +
+                'The time is a quoted string in RFC 3339 format, with sub-second precision added if present.',
+              examples: [ '2021-02-18T21:54:42.123Z' ]
+            },
+            transactionHash: {
+              type: 'string',
+              description: "The hash of the transaction. It's used to uniquely identify the transaction and can be used in the block explorer to retrieve it."
+            }
+          }
+        }
+      },
+      errors: [
+        {
+          code: 1000,
+          message: 'Network error',
+          data: 'no healthy node available'
+        },
+        {
+          code: 1000,
+          message: 'Network error',
+          data: "couldn't get information about the last block on the network"
+        },
+        {
+          code: 1000,
+          message: 'Network error',
+          data: 'the transaction failed'
+        },
+        {
+          code: 2000,
+          message: 'Application error',
+          data: 'the public key is not allowed to be used'
+        },
+        {
+          code: 3000,
+          message: 'Client error',
+          data: 'the client closed the connection'
+        },
+        {
+          code: 3001,
+          message: 'Client error',
+          data: 'the client rejected the request'
+        },
+        {
+          code: -32001,
+          message: 'Server error',
+          data: 'the request has been interrupted'
+        }
+      ],
+      examples: [
+        {
+          name: 'Sending a transaction for "vega.xyz"',
+          description: 'The third-party application "vega.xyz" requests to send a transaction and the client accepts.',
+          params: [
+            {
+              name: 'token',
+              value: 'hZKSx0snBvikp2NGMJdKPHU5qvloSeqpqbJg6BsMwCcqX4iZvvy99BV2l13oeyEG'
+            },
+            {
+              name: 'publicKey',
+              value: '3fd42fd5ceb22d99ac45086f1d82d516118a5cb7ad9a2e096cd78ca2c8960c80'
+            },
+            { name: 'sendingMode', value: 'TYPE_SYNC' },
+            {
+              name: 'encodedTransaction',
+              value: 'ewogICAgInZvdGVTdWJtaXNzaW9uIjogewogICAgICAgICJwcm9wb3NhbElkIjogImViMmQzOTAyZmRkYTljM2ViNmUzNjlmMjIzNTY4OWI4NzFjNzMyMmNmM2FiMjg0ZGRlM2U5ZGZjMTM4NjNhMTciLAogICAgICAgICJ2YWx1ZSI6ICJWQUxVRV9ZRVMiCiAgICB9Cn0K'
+            }
+          ],
+          result: {
+            name: 'Success',
+            value: {
+              receivedAt: '2021-02-18T21:54:42.123Z',
+              sentAt: '2021-02-18T21:54:42.123Z',
+              txHash: 'E8C167126D1FC8D92898AB9C07C318161DF68753A1316A69ABDC9ADC557723B3'
+            }
+          }
+        }
+      ]
+    },
+    {
+      name: 'session.get_chain_id',
+      summary: 'Returns the chain ID of the network in use.',
+      description: 'This method returns the chain ID of the network in use.\n' +
+        '\n' +
+        'It should be called by every third-party application to know from which network it should fetch data.',
+      paramStructure: 'by-name',
+      params: [],
+      result: {
+        name: 'chainID',
+        schema: {
+          type: 'object',
+          properties: {
+            chainID: {
+              type: 'string',
+              description: 'The identifier for the chain',
+              examples: [ 'test-chain-Thz9c6' ]
+            }
+          }
+        }
+      },
+      errors: [
+        {
+          code: 1000,
+          message: 'Network error',
+          data: 'no healthy node available'
+        },
+        {
+          code: 1000,
+          message: 'Network error',
+          data: "couldn't get information about the last block on the network"
+        }
+      ],
+      examples: [
+        {
+          name: 'Fetching the chain ID',
+          description: "An example of requesting the chain's ID",
+          params: [],
+          result: { name: 'Success', value: { chainID: 'test-chain-Thz9c6' } }
+        }
+      ]
+    }
+  ],
+  components: {
+    schemas: {
+      token: {
+        type: 'string',
+        description: "A unique connection token randomly generated for each new connection. It's used to access the protected methods."
+      },
+      public_key: { type: 'string', description: 'The Vega public key to use.' },
+      encoded_transaction: {
+        type: 'string',
+        description: 'The transaction encoded using base-64.'
+      },
+      access_mode: {
+        type: 'string',
+        description: 'The different access modes a permission can have.',
+        enum: [ 'read', 'write', 'none' ]
+      },
+      permissions: {
+        type: 'object',
+        description: 'The description of the permissions a third-party application has.',
+        properties: {
+          public_keys: {
+            type: 'string',
+            description: 'The different access modes a permission can have.',
+            enum: [ 'read', 'write', 'none' ]
+          }
+        }
+      }
+    },
+    errors: {
+      no_healthy_node: {
+        code: 1000,
+        message: 'Network error',
+        data: 'no healthy node available'
+      },
+      could_not_get_last_block: {
+        code: 1000,
+        message: 'Network error',
+        data: "couldn't get information about the last block on the network"
+      },
+      transaction_failed: {
+        code: 1000,
+        message: 'Network error',
+        data: 'the transaction failed'
+      },
+      read_access_public_keys: {
+        code: 2000,
+        message: 'Application error',
+        data: 'a "read" access on public keys is required'
+      },
+      public_key_not_allowed: {
+        code: 2000,
+        message: 'Application error',
+        data: 'the public key is not allowed to be used'
+      },
+      connection_closed: {
+        code: 3000,
+        message: 'Client error',
+        data: 'the client closed the connection'
+      },
+      request_rejected: {
+        code: 3001,
+        message: 'Client error',
+        data: 'the client rejected the request'
+      },
+      request_interrupted: {
+        code: -32001,
+        message: 'Server error',
+        data: 'the request has been interrupted'
+      }
+    }
+  }
+}
 ---
     title: OpenRPC Wallet API
 ---
@@ -127,7 +673,7 @@ This method should be called, by the third-party application, right after it suc
 ### Result: `permissions`
 | Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
-| public_keys | string | The different access modes a permission can have. | -|
+| public_keys | string | The different access modes a permission can have. | The different access modes a permission can have.} |
 
 
 
@@ -177,7 +723,7 @@ The client has to review the permissions.
 ### Result: `permissions`
 | Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
-| public_keys | string | The different access modes a permission can have. | -|
+| public_keys | string | The different access modes a permission can have. | The different access modes a permission can have.} |
 
 ### Errors
 - **Client error** (3000): the client closed the connection
@@ -310,9 +856,9 @@ The client has to review the transaction.
 ### Result: `transaction_status`
 | Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
-| receivedAt | string | The date when the API received the request to send the transaction. The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | `"2021-02-18T21:54:42.123Z"`|
-| sentAt | string | The date when the transaction has been sent to the network. The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | `"2021-02-18T21:54:42.123Z"`|
-| transactionHash | string | The hash of the transaction. It's used to uniquely identify the transaction and can be used in the block explorer to retrieve it. | -|
+| receivedAt | string | The date when the API received the request to send the transaction.<br /><br />The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | The date when the API received the request to send the transaction.<br /><br />The time is a quoted string in RFC 3339 format, with sub-second precision added if present.} |
+| sentAt | string | The date when the transaction has been sent to the network.<br /><br />The time is a quoted string in RFC 3339 format, with sub-second precision added if present. | The date when the transaction has been sent to the network.<br /><br />The time is a quoted string in RFC 3339 format, with sub-second precision added if present.} |
+| transactionHash | string | The hash of the transaction. It's used to uniquely identify the transaction and can be used in the block explorer to retrieve it. | The hash of the transaction. It's used to uniquely identify the transaction and can be used in the block explorer to retrieve it.} |
 
 ### Errors
 - **Network error** (1000): no healthy node available
@@ -370,7 +916,7 @@ None required
 ### Result: `chainID`
 | Result key  |  Type  |  Description | Example |
 |------------------|--------|--------|---------|
-| chainID | string | The identifier for the chain | `"test-chain-Thz9c6"`|
+| chainID | string | The identifier for the chain | The identifier for the chain} |
 
 ### Errors
 - **Network error** (1000): no healthy node available

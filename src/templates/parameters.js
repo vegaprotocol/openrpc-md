@@ -25,11 +25,11 @@ export function sectionParameters (params) {
 
       // Currently very hardcoded to the permissions type
       if (value?.schema?.properties) {
-        altDescription += '\r\n\r\n' + Object.keys(value.schema.properties).map(key => {
+        altDescription += '<br /><br />' + Object.keys(value.schema.properties).map(key => {
           const prop = value.schema.properties[key]
 
           return prop.enum.map(v => `${CODE}{ "${key}": "${v}" }${CODE}`).join('\r\n')
-        }).join('\r\n')
+        }).join('<br />')
       }
 
       return `| ${name} | ${value.schema.type} | ${altDescription.replace(/(\r\n|\n|\r)/gm, '<br />')} |`
