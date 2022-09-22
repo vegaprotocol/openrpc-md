@@ -1,6 +1,6 @@
 {
   "name": "@vegaprotocol/openrpc-md",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Generate a single markdown from a simplistic openrpc doc",
   "type": "module",
   "main": "src/index.js",
@@ -8,7 +8,6 @@
     "openrpc-md": "src/index.js"
   },
   "scripts": {
-    "postinstall": "npm run setup",
     "setup": "husky install",
     "test": "tape src/**/*.test.js | tap-arc",
     "lint": "standard src/**/*.js",
