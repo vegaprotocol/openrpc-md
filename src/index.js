@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#! /usr/bin/env node
 
 import { readFileSync } from 'node:fs'
 import { parseOpenRPCDocument } from '@open-rpc/schema-utils-js'
