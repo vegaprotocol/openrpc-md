@@ -28,7 +28,11 @@ export function sectionParameters (params) {
         altDescription += '<br /><br />' + Object.keys(value.schema.properties).map(key => {
           const prop = value.schema.properties[key]
 
-          return prop.enum.map(v => `${CODE}{ "${key}": "${v}" }${CODE}`).join('<br />')
+          if (prop.enum) {
+            return prop.enum.map(v => `${CODE}{ "${key}": "${v}" }${CODE}`).join('<br />')
+          } else {
+            return ''
+          }
         }).join('<br />')
       }
 
