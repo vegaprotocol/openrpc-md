@@ -25,5 +25,6 @@ try {
   const intro = sectionIntro(json)
   console.log(wrapper(output, intro, title))
 } catch (e) {
-  console.error(`Unable to open or parse ${target}: ${e}`)
+  console.error(`Unable to open or parse ${target}`)
+  console.dir(e)
 }
