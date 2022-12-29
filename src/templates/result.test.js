@@ -27,7 +27,7 @@ test('A result with a schema but no properties gets a very basic treatment', t =
 })
 
 test('Results descriptions examples format correctly', t => {
-  t.plan(12)
+  t.plan(16)
 
   const input = {
     name: 'Testtextdescriptions',
@@ -46,6 +46,9 @@ test('Results descriptions examples format correctly', t => {
         },
         thirdProp: {
           type: 'string'
+        },
+        fourthProp: {
+          description: 'thisOneHasNoType'
         }
       }
     }
@@ -74,6 +77,11 @@ test('Results descriptions examples format correctly', t => {
         t.equal(cols[2].trim(), 'string', 'Type comes from the type prop')
         t.equal(cols[3].trim(), '-', 'Missing schema and description prop gets a -')
         t.equal(cols[4].trim(), '-', 'Missing schema and description prop gets a -')
+      } else if (index === 6) {
+        t.equal(cols[1].trim(), 'fourthProp', 'Name comes from the key of the prop')
+        t.equal(cols[2].trim(), '', 'Type does not render undefined')
+        t.equal(cols[3].trim(), 'thisOneHasNoType', 'Prop description is used')
+        t.equal(cols[4].trim(), 'thisOneHasNoType', 'Prop description is used')
       }
     }
   })

@@ -29,6 +29,15 @@ test('Examples renders a header if there are examples', t => {
   t.ok(res.startsWith('### Examples'), 'Contains a second level heading')
 })
 
+test('Examples does not render undefined if there is no description', t => {
+  t.plan(1)
+  const exampleWithoutDescription = Object.assign({}, example)
+  delete exampleWithoutDescription.description
+
+  const res = sectionExamples([example], 'method.name')
+  t.notOk(res.match(/undefined/), 'Does not render undefined')
+})
+
 test('Examples renders the example', t => {
   t.plan(5)
   const res = sectionExamples([example], 'method.name')
