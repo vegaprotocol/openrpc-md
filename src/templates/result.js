@@ -33,7 +33,7 @@ export function sectionResult (result) {
       }).join('<br />')
     }
 
-    return `| ${key} | ${value.type} | ${altDescription.replace(/(\r\n|\n|\r)/gm, '<br />')} | ${altExamples.replace(/(\r\n|\n|\r)/gm, '<br />')} |`
+    return `| ${key} | ${value.type || ''} | ${altDescription.replace(/(\r\n|\n|\r)/gm, '<br />')} | ${altExamples.replace(/(\r\n|\n|\r)/gm, '<br />')} |`
   }).join('\r\n')
 
   return `${output}
