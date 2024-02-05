@@ -28,7 +28,7 @@
   "homepage": "https://github.com/vegaprotocol/openrpc-md#readme",
   "license": "MIT",
   "devDependencies": {
-    "husky": "^8.0.1",
+    "husky": "^9.0.10",
     "standard": "^17.1.0",
     "tap-arc": "^1.2.2",
     "tape": "^5.6.0"
