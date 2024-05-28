@@ -34,6 +34,6 @@
     "tape": "^5.6.0"
   },
   "dependencies": {
-    "@open-rpc/schema-utils-js": "^1.16.1"
+    "@open-rpc/schema-utils-js": "^2.0.2"
   }
 }
